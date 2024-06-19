@@ -6,7 +6,6 @@ use App\Repositories\BlogPostRepository;
 use Illuminate\Http\Request;
 use App\Repositories\BlogCategoryRepository;
 use App\Http\Requests\BlogPostUpdateRequest;
-use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 
@@ -24,8 +23,8 @@ class PostController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->blogPostRepository = app(BlogPostRepository::class);
-        $this->blogCategoryRepository = app(BlogCategoryRepository::class); //app вертає об'єкт класа
+        $this->blogPostRepository = app(BlogPostRepository::class); //app вертає об'єкт класа
+        $this->blogCategoryRepository = app(BlogCategoryRepository::class);
     }
     /**
      * Display a listing of the resource.
@@ -91,12 +90,6 @@ class PostController extends BaseController
 
         $data = $request->all(); //отримаємо масив даних, які надійшли з форми
 
-        if (empty($data['slug'])) { //якщо псевдонім порожній
-            $data['slug'] = Str::slug($data['title']); //генеруємо псевдонім
-        }
-        if (empty($item->published_at) && $data['is_published']) { //якщо поле published_at порожнє і нам прийшло 1 в ключі is_published, то
-            $data['published_at'] = Carbon::now(); //генеруємо поточну дату
-        }
         $result = $item->update($data); //оновлюємо дані об'єкта і зберігаємо в БД
 
         if ($result) {
